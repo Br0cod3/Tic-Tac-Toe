@@ -27,3 +27,26 @@ const Gameboard = (function () {
 
   return { getBoard, placemark, resetBoard }
 })();
+
+const GameController = (function() {
+  let player = 0
+  let char;
+  
+  const makePlayer = (name) => {
+    if (player > 1) return;
+    
+    char = player === 0 ? "X" : "O"
+    playerIncrement()
+    return { name, char}
+  }
+
+  const playerIncrement = () => player++;
+
+  return { makePlayer }
+
+})()
+
+console.log(GameController.makePlayer("Mike"))
+console.log(GameController.makePlayer("Mary"))
+console.log(GameController.makePlayer("Mark"))
+console.log(GameController.makePlayer("Mason"))
