@@ -52,6 +52,9 @@
     border-radius: 10px;
     border: none;
     align-self: center;
+    color: white;
+    font-family: "Sakkal", serif;
+    font-size: 1.5rem;
 }
 
 .start {
