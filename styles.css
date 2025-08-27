@@ -33,6 +33,7 @@
 .mark {
     background-color: white;
     border-radius: 20%;
+    background-color: #3882F6;
 }
 
 .heading {
@@ -51,6 +52,14 @@
     border-radius: 10px;
     border: none;
     align-self: center;
+}
+
+.start {
+    background-color: green;
+}
+
+.reset {
+    background-color: red;
 }
 
 .displaybox {
