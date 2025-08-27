@@ -5,11 +5,44 @@
 
 .container {
     display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 2fr 1fr 3fr 2fr;
     height: 100vh;
     width: 100%;
     background-color: black;
     color: white;
-    justify-content: center;
+    justify-items: center;
+    padding: 1rem;
+    gap: 20px;
 }
 
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 4px solid blue;
+    width: 19rem;
+    height: 19rem;
+    gap: 10px;
+}
 
+.mark {
+    background-color: white;
+    border-radius: 20%;
+}
+
+.heading {
+    font-size: 2.5rem;
+}
+
+.btn {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn > *{
+    height: 2.8rem;
+    width: 9rem;
+    border-radius: 10px;
+    border: none;
+    align-self: center;
+}
