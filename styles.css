@@ -4,16 +4,12 @@
 }
 
 .container {
-    display: flex;
+    display: grid;
     height: 100vh;
     width: 100%;
+    background-color: black;
+    color: white;
+    justify-content: center;
 }
 
-.sidebar {
-    flex: 1;
-    background: url(./img/grid.jpg) center / cover no-repeat;
-}
 
-.main {
-    flex: 2;
-}
