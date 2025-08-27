@@ -9,14 +9,67 @@
     src: url(./font/majallab.woff) format(woff);
 }
 
-.container {
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: black;
+    color: white;
+    font-family: "Sakkal", serif;
+    font-size: 1.5rem;
+}
+
+.play-input {
+    display: grid;
+    place-items: center;
+}
+
+.form {
+    display: grid;
+    gap: 1rem;
+}
+
+.form > * {
+    width: 20rem;
+}
+
+input {
+    height: 1.6rem;
+    width: 20rem;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    padding-left: 4px;
+}
+
+input,
+button[type="submit"],
+.btn > * {
+    font-family: "Sakkal", serif;
+    font-size: 1.5rem
+}
+
+button[type="submit"] {
+    justify-self: center;
+    height: 2rem;
+    width: 12rem;
+    border-radius: 10px;
+    border: none;
+    margin-top: 1em;
+    background-color: #3882F6;
+    color: white;
+}
+
+label {
+    display: block;
+    height: 1.5rem;
+}
+
+.body-container {
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 2fr 1fr 3fr 2fr;
     height: 100vh;
     width: 100%;
-    background-color: black;
-    color: white;
     justify-items: center;
     padding: 1rem;
     gap: 20px;
@@ -55,8 +108,6 @@
     border: none;
     align-self: center;
     color: white;
-    font-family: "Sakkal", serif;
-    font-size: 1.5rem;
 }
 
 .start {
@@ -70,4 +121,9 @@
 .displaybox {
     font-size: 1.5rem;
     font-family: "Sakkal", serif;
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
 }
