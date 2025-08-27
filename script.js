@@ -4,9 +4,10 @@ const GamePilot = (function () {
       name,
       value,
       myTurn: false,
-      makeMove: function(row, column) {
+      makeMove: function (row, column) {
         if (this.myTurn) {
-          Gameboard.placemark(row, column, this.value, this)
+          Gameboard.placemark(row, column, this.value, this);
+          GameController.playMove();
         }
       },
     };
@@ -73,7 +74,6 @@ const GamePilot = (function () {
   return { generatePlayer, checkWin };
 })();
 
-
 const Gameboard = (function () {
   const row = 3;
   const columns = 3;
@@ -88,7 +88,7 @@ const Gameboard = (function () {
 
   const getBoard = () => board;
 
-  const placemark = function(row, column, char, player) {
+  const placemark = function (row, column, char, player) {
     if (board[row][column] !== null) {
       console.log("unable to move, that space is taken");
       return false;
@@ -109,3 +109,35 @@ const Gameboard = (function () {
 
   return { getBoard, placemark, resetBoard };
 })();
+
+const GameController = (function () {
+  const player1 = GamePilot.generatePlayer("Mark", "X");
+  const player2 = GamePilot.generatePlayer("Mary", "O");
+
+  let currentPlayer = player1;
+  player1.myTurn = true;
+
+  const switchTurn = () => {
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+    player1.myTurn = currentPlayer === player1;
+    player2.myTurn = currentPlayer === player2;
+  };
+
+  const playMove = () => {
+    const result = GamePilot.checkWin(Gameboard.getBoard(), currentPlayer);
+    if (result) {
+      console.log(result);
+      return result;
+    }
+    switchTurn();
+  };
+  return { playMove, getCurrentPlayer: () => currentPlayer };
+})();
+
+GameController.getCurrentPlayer().makeMove(2, 2);
+GameController.getCurrentPlayer().makeMove(0, 0);
+GameController.getCurrentPlayer().makeMove(1, 0);
+GameController.getCurrentPlayer().makeMove(0, 1);
+GameController.getCurrentPlayer().makeMove(2, 0);
+GameController.getCurrentPlayer().makeMove(0, 2)
+console.log(Gameboard.getBoard());
