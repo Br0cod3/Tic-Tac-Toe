@@ -4,10 +4,13 @@ const GamePilot = (function () {
       name,
       value,
       myTurn: false,
-      makeMove: function(row, column) {
+      makeMove: function (row, column) {
         if (this.myTurn) {
-          Gameboard.placemark(row, column, this.value, this)
+          Gameboard.placemark(row, column, this.value, this);
         }
       },
     };
   };
+  return { generatePlayer };
+})();
+
