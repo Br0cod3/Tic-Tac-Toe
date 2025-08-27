@@ -46,3 +46,7 @@
     border: none;
     align-self: center;
 }
+
+.displaybox {
+    font-size: 1.3rem;
+}
