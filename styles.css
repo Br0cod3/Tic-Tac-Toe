@@ -3,6 +3,12 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "Sakkal";
+    src: url(./font/majalla.woff) format(woff);
+    src: url(./font/majallab.woff) format(woff);
+}
+
 .container {
     display: grid;
     grid-template-columns: 100%;
@@ -30,7 +36,8 @@
 }
 
 .heading {
-    font-size: 2.5rem;
+    font-size: 3rem;
+    font-family: "Sakkal", serif;
 }
 
 .btn {
@@ -47,5 +54,6 @@
 }
 
 .displaybox {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    font-family: "Sakkal", serif;
 }
