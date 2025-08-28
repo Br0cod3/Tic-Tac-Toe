@@ -13,6 +13,15 @@ const GamePilot = (function () {
     };
   };
 
+  const initializePlayers = function () {
+    const dom = DomController.playerInputs();
+    const player1 = GamePilot.generatePlayer(dom.input1, "X");
+    const player2 = GamePilot.generatePlayer(dom.input2, "O");
+    player1.myTurn = true;
+
+    return { player1, player2 };
+  };
+
   const checkWin = (board, player) => {
     const winConditions = [
       [
@@ -71,7 +80,18 @@ const GamePilot = (function () {
     return null;
   };
 
-  return { generatePlayer, checkWin };
+  const checkDraw = (board) => {
+    for (let row of board) {
+      for (let cell of row) {
+        if (cell === "" || cell === null) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
+  return { generatePlayer, checkWin, initializePlayers, checkDraw };
 })();
 
 const Gameboard = (function () {
@@ -110,12 +130,79 @@ const Gameboard = (function () {
   return { getBoard, placemark, resetBoard };
 })();
 
-const GameController = (function () {
-  const player1 = GamePilot.generatePlayer("Mark", "X");
-  const player2 = GamePilot.generatePlayer("Mary", "O");
+const DomController = (function () {
+  const start = document.querySelector(".start");
+  const form = document.querySelector(".form");
+  const submit = document.querySelector(".submit");
+  const reset = document.querySelector(".reset");
+  const pads = document.querySelectorAll(".mark");
 
-  let currentPlayer = player1;
-  player1.myTurn = true;
+  const playerInputs = function () {
+    const input1 = document.getElementById("player1").value;
+    const input2 = document.getElementById("player2").value;
+    return { input1, input2 };
+  };
+
+  const handleClick = function (e) {
+    const row = e.target.getAttribute("data-row");
+    const column = e.target.getAttribute("data-col");
+
+    const currentPlayer = GameController.getCurrentPlayer();
+    e.target.innerHTML = currentPlayer.value;
+    currentPlayer.makeMove(row, column);
+  };
+
+  const addPadListeners = () => {
+    pads.forEach((position) => {
+      position.addEventListener("click", handleClick);
+    });
+  };
+
+  const removePadListeners = () => {
+    pads.forEach((pad) => {
+      pad.innerHTML = "";
+      pad.removeEventListener("click", handleClick);
+    });
+  };
+
+  start.addEventListener("click", () => {
+    form.classList.remove("hidden");
+  });
+
+  submit.addEventListener("click", (e) => {
+    e.preventDefault();
+    const { input1, input2 } = playerInputs()
+    if (!input1 || !input2) {
+      alert("please enter in both player's names")
+      return;
+    };
+    addPadListeners();
+    GameController.initializeGame()
+    form.classList.add("hidden");
+  });
+
+  reset.addEventListener("click", () => {
+    Gameboard.resetBoard();
+    removePadListeners();
+    GameController.resetGame()
+    form.reset();
+    form.classList.remove("hidden")
+  });
+
+  return { playerInputs, removePadListeners };
+})();
+
+const GameController = (function () {
+  let currentPlayer = null
+  let player1 = null
+  let player2 = null
+
+  const initializeGame = () => {
+    const players = GamePilot.initializePlayers()
+    player1 = players.player1
+    player2 = players.player2
+    currentPlayer = player1
+  }
 
   const switchTurn = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -123,21 +210,35 @@ const GameController = (function () {
     player2.myTurn = currentPlayer === player2;
   };
 
+  const eventReset = () => {
+      Gameboard.resetBoard();
+      DomController.removePadListeners();
+      GameController.resetGame()
+  }
+
   const playMove = () => {
+    const board = Gameboard.getBoard();
     const result = GamePilot.checkWin(Gameboard.getBoard(), currentPlayer);
+
     if (result) {
       console.log(result);
+      eventReset()
       return result;
+    }
+
+    if (GamePilot.checkDraw(board)) {
+      console.log("It's a draw")
+      eventReset();
+      return "draw"
     }
     switchTurn();
   };
-  return { playMove, getCurrentPlayer: () => currentPlayer };
-})();
 
-GameController.getCurrentPlayer().makeMove(2, 2);
-GameController.getCurrentPlayer().makeMove(0, 0);
-GameController.getCurrentPlayer().makeMove(1, 0);
-GameController.getCurrentPlayer().makeMove(0, 1);
-GameController.getCurrentPlayer().makeMove(2, 0);
-GameController.getCurrentPlayer().makeMove(0, 2)
-console.log(Gameboard.getBoard());
+  const resetGame = () => {
+    player1 = null
+    player2 = null
+    currentPlayer = null
+  }
+
+  return { initializeGame, playMove, getCurrentPlayer: () => currentPlayer, resetGame };
+})();
