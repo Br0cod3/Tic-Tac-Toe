@@ -74,6 +74,7 @@ const GamePilot = (function () {
         board[r2][c2] === board[r3][c3] &&
         (board[r1][c1] !== null) & (board[r1][c1] !== "")
       ) {
+        DomController.displayBox.textContent = `${player.name} wins`
         return `${player.name} wins`;
       }
     }
@@ -88,6 +89,7 @@ const GamePilot = (function () {
         }
       }
     }
+    DomController.displayBox.textContent = "It's a tie"
     return true
   }
 
@@ -136,6 +138,7 @@ const DomController = (function () {
   const submit = document.querySelector(".submit");
   const reset = document.querySelector(".reset");
   const pads = document.querySelectorAll(".mark");
+  const displayBox = document.querySelector(".displaybox")
 
   const playerInputs = function () {
     const input1 = document.getElementById("player1").value;
@@ -185,11 +188,12 @@ const DomController = (function () {
     Gameboard.resetBoard();
     removePadListeners();
     GameController.resetGame()
+    displayBox.textContent = ""
     form.reset();
     form.classList.remove("hidden")
   });
 
-  return { playerInputs, removePadListeners };
+  return { playerInputs, removePadListeners, displayBox };
 })();
 
 const GameController = (function () {
