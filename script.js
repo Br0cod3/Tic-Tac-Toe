@@ -6,9 +6,14 @@ const GamePilot = (function () {
       myTurn: false,
       makeMove: function (row, column) {
         if (this.myTurn) {
-          Gameboard.placemark(row, column, this.value, this);
-          GameController.playMove();
+          const success = Gameboard.placemark(row, column, this.value, this);
+          if (success) {
+            DomController.updateCell(row, column, this.value)
+            GameController.playMove();
+            return true;
+          }
         }
+        return false;
       },
     };
   };
@@ -74,7 +79,7 @@ const GamePilot = (function () {
         board[r2][c2] === board[r3][c3] &&
         (board[r1][c1] !== null) & (board[r1][c1] !== "")
       ) {
-        DomController.displayBox.textContent = `${player.name} wins`
+        DomController.displayBox.textContent = `${player.name} wins`;
         return `${player.name} wins`;
       }
     }
@@ -85,13 +90,13 @@ const GamePilot = (function () {
     for (let row of board) {
       for (let cell of row) {
         if (cell === "" || cell === null) {
-          return false
+          return false;
         }
       }
     }
-    DomController.displayBox.textContent = "It's a tie"
-    return true
-  }
+    DomController.displayBox.textContent = "It's a tie";
+    return true;
+  };
 
   return { generatePlayer, checkWin, initializePlayers, checkDraw };
 })();
@@ -138,7 +143,7 @@ const DomController = (function () {
   const submit = document.querySelector(".submit");
   const reset = document.querySelector(".reset");
   const pads = document.querySelectorAll(".mark");
-  const displayBox = document.querySelector(".displaybox")
+  const displayBox = document.querySelector(".displaybox");
 
   const playerInputs = function () {
     const input1 = document.getElementById("player1").value;
@@ -151,8 +156,8 @@ const DomController = (function () {
     const column = e.target.getAttribute("data-col");
 
     const currentPlayer = GameController.getCurrentPlayer();
-    e.target.innerHTML = currentPlayer.value;
-    currentPlayer.makeMove(row, column);
+   
+    currentPlayer.makeMove(row, column)
   };
 
   const addPadListeners = () => {
@@ -168,45 +173,52 @@ const DomController = (function () {
     });
   };
 
+  const updateCell = function(row, column, value) {
+    const selector = `[data-row='${row}'][data-col='${column}']`
+    const cell = document.querySelector(selector);
+
+    if(cell) cell.innerHTML = value;
+  }
+
   start.addEventListener("click", () => {
     form.classList.remove("hidden");
   });
 
   submit.addEventListener("click", (e) => {
     e.preventDefault();
-    const { input1, input2 } = playerInputs()
+    const { input1, input2 } = playerInputs();
     if (!input1 || !input2) {
-      alert("please enter in both player's names")
+      alert("please enter in both player's names");
       return;
-    };
+    }
     addPadListeners();
-    GameController.initializeGame()
+    GameController.initializeGame();
     form.classList.add("hidden");
   });
 
   reset.addEventListener("click", () => {
     Gameboard.resetBoard();
     removePadListeners();
-    GameController.resetGame()
-    displayBox.textContent = ""
+    GameController.resetGame();
+    displayBox.textContent = "";
     form.reset();
-    form.classList.remove("hidden")
+    form.classList.remove("hidden");
   });
 
-  return { playerInputs, removePadListeners, displayBox };
+  return { playerInputs, removePadListeners, displayBox, updateCell };
 })();
 
 const GameController = (function () {
-  let currentPlayer = null
-  let player1 = null
-  let player2 = null
+  let currentPlayer = null;
+  let player1 = null;
+  let player2 = null;
 
   const initializeGame = () => {
-    const players = GamePilot.initializePlayers()
-    player1 = players.player1
-    player2 = players.player2
-    currentPlayer = player1
-  }
+    const players = GamePilot.initializePlayers();
+    player1 = players.player1;
+    player2 = players.player2;
+    currentPlayer = player1;
+  };
 
   const switchTurn = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -215,10 +227,10 @@ const GameController = (function () {
   };
 
   const eventReset = () => {
-      Gameboard.resetBoard();
-      DomController.removePadListeners();
-      GameController.resetGame()
-  }
+    Gameboard.resetBoard();
+    DomController.removePadListeners();
+    GameController.resetGame();
+  };
 
   const playMove = () => {
     const board = Gameboard.getBoard();
@@ -226,23 +238,28 @@ const GameController = (function () {
 
     if (result) {
       console.log(result);
-      eventReset()
+      eventReset();
       return result;
     }
 
     if (GamePilot.checkDraw(board)) {
-      console.log("It's a draw")
+      console.log("It's a draw");
       eventReset();
-      return "draw"
+      return "draw";
     }
     switchTurn();
   };
 
   const resetGame = () => {
-    player1 = null
-    player2 = null
-    currentPlayer = null
-  }
+    player1 = null;
+    player2 = null;
+    currentPlayer = null;
+  };
 
-  return { initializeGame, playMove, getCurrentPlayer: () => currentPlayer, resetGame };
+  return {
+    initializeGame,
+    playMove,
+    getCurrentPlayer: () => currentPlayer,
+    resetGame,
+  };
 })();
